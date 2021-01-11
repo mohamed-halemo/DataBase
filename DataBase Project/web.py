@@ -168,8 +168,8 @@ def add():
       email = request.form["doctorEmail"]
       password= request.form["doctorPass"]
       ID = request.form["doctorID"]
-      sql = "INSERT INTO Doctors (username,email,ID) VALUES (%s, %s, %s)"
-      val = (username,email,ID)
+      sql = "INSERT INTO Doctors (username,email,password,ID) VALUES (%s, %s,%s, %s)"
+      val = (username,email,password,ID)
       mycursor.execute(sql, val)
       mydb.commit()
       return render_template('Home.html') 
@@ -212,10 +212,10 @@ def viewP():
 @app.route('/removeDoctor', methods=['GET', 'POST'])
 def deleteD():
    if request.method=="POST":
-      username = request.form["Dname"]
+      id = request.form["doctorID"]
       mycursor = mydb.cursor()
-      sql = "DELETE FROM Doctors WHERE username = %s"
-      val = (username,)
+      sql = "DELETE FROM Doctors WHERE id = %s"
+      val = (id,)
       mycursor.execute(sql, val)
       mydb.commit()
       flash(f'Doctor succesfully removed !')    
@@ -226,10 +226,10 @@ def deleteD():
 @app.route('/removePatient', methods=['GET', 'POST'])
 def deleteP():
    if request.method=="POST":
-      username = request.form["Pname"]
+      id = request.form["patientID"]
       mycursor = mydb.cursor()
-      sql = "DELETE FROM patients WHERE username = %s"
-      val = (username,)
+      sql = "DELETE FROM patients WHERE id = %s"
+      val = (id,)
       mycursor.execute(sql, val)
       mydb.commit()
       flash(f'Patient succesfully removed !')    

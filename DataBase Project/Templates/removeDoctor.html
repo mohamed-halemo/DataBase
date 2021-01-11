@@ -1,8 +1,8 @@
 {% extends "layout.html" %}
 {% block content %}
 <form action="http://localhost:5000/removeDoctor" method="POST">
-    <label for="username">Username:</label><br>
-    <input type="text" id="username" name="Dname"><br>
+    <label for="ID">ID:</label><br>
+    <input type="number" id="ID" name="doctorID"><br>
     <input type="submit" value="Submit">
 
     <a href="http://127.0.0.1:5000/login">Back</a> 
