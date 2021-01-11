@@ -166,6 +166,7 @@ def add():
    if request.method=="POST":
       username = request.form["doctorName"]
       email = request.form["doctorEmail"]
+      password= request.form["doctorPass"]
       ID = request.form["doctorID"]
       sql = "INSERT INTO Doctors (username,email,ID) VALUES (%s, %s, %s)"
       val = (username,email,ID)
@@ -176,7 +177,7 @@ def add():
       return render_template('addDoctor.html') 
 
 @app.route('/viewDoctors')
-def view():
+def viewD():
    mycursor.execute("SELECT * FROM Doctors")
    row_headers=[x[0] for x in mycursor.description] 
    myresult = mycursor.fetchall()
@@ -214,13 +215,27 @@ def deleteD():
       username = request.form["Dname"]
       mycursor = mydb.cursor()
       sql = "DELETE FROM Doctors WHERE username = %s"
-      val = (username)
+      val = (username,)
       mycursor.execute(sql, val)
       mydb.commit()
-      return render_template('Home.html') 
+      flash(f'Doctor succesfully removed !')    
+      return redirect(url_for('viewD'))
    else:
       return render_template('removeDoctor.html')
 
+@app.route('/removePatient', methods=['GET', 'POST'])
+def deleteP():
+   if request.method=="POST":
+      username = request.form["Pname"]
+      mycursor = mydb.cursor()
+      sql = "DELETE FROM patients WHERE username = %s"
+      val = (username,)
+      mycursor.execute(sql, val)
+      mydb.commit()
+      flash(f'Patient succesfully removed !')    
+      return redirect(url_for('viewP'))
+   else:
+      return render_template('removePatient.html')
 if __name__ == '__main__':
    app.run(debug=True)
 
