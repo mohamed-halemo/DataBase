@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block content %}
+<table>
+    <tr>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Password</th>
+      <th>ID</th>
+    </tr>
+    {% for data in viewD %}
+    <tr>
+        <th>{{data.0}}</th>
+        <th>{{data.1}}</th>
+        <th>{{data.2}}</th>
+        <th>{{data.3}}</th>
+    </tr>
+    {% endfor %}
+</table>    
+<a href="http://127.0.0.1:5000/login">Back</a> 
+
+
+{% endblock content %}

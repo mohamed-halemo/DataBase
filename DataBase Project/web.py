@@ -131,7 +131,7 @@ def login():
 
               
 
-           return redirect(url_for('home'))
+           return render_template('admin.html',title='Register',form=form)
 
          
  
@@ -161,6 +161,65 @@ def contact():
   elif request.method == 'GET':
     return render_template('contact.html', form=form)
 
+@app.route('/addDoctor', methods=['GET', 'POST'])
+def add():
+   if request.method=="POST":
+      username = request.form["doctorName"]
+      email = request.form["doctorEmail"]
+      ID = request.form["doctorID"]
+      sql = "INSERT INTO Doctors (username,email,ID) VALUES (%s, %s, %s)"
+      val = (username,email,ID)
+      mycursor.execute(sql, val)
+      mydb.commit()
+      return render_template('Home.html') 
+   else:
+      return render_template('addDoctor.html') 
+
+@app.route('/viewDoctors')
+def view():
+   mycursor.execute("SELECT * FROM Doctors")
+   row_headers=[x[0] for x in mycursor.description] 
+   myresult = mycursor.fetchall()
+   for x in myresult:
+      print(x)
+   return render_template('viewDoctors.html',viewD=myresult)
+
+@app.route('/addPatient', methods=['GET', 'POST'])
+def addP():
+   if request.method=="POST":
+      username = request.form["patientName"]
+      email = request.form["patientEmail"]
+      password= request.form["patientPass"]
+      ID = request.form["patientID"]
+      sql = "INSERT INTO patients (username,email,password,ID) VALUES (%s, %s, %s, %s)"
+      val = (username,email,password,ID)
+      mycursor.execute(sql, val)
+      mydb.commit()
+      return render_template('Home.html') 
+   else:
+      return render_template('addPatient.html') 
+
+@app.route('/viewPatients')
+def viewP():
+   mycursor.execute("SELECT * FROM patients")
+   row_headers=[x[0] for x in mycursor.description] 
+   myresult = mycursor.fetchall()
+   for x in myresult:
+      print(x)
+   return render_template('viewPatients.html',viewP=myresult)  
+
+@app.route('/removeDoctor', methods=['GET', 'POST'])
+def deleteD():
+   if request.method=="POST":
+      username = request.form["Dname"]
+      mycursor = mydb.cursor()
+      sql = "DELETE FROM Doctors WHERE username = %s"
+      val = (username)
+      mycursor.execute(sql, val)
+      mydb.commit()
+      return render_template('Home.html') 
+   else:
+      return render_template('removeDoctor.html')
 
 if __name__ == '__main__':
    app.run(debug=True)

@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block content %}
+<form action="http://localhost:5000/addPatient" method="POST">
+    <label for="username">Username:</label><br>
+    <input type="text" id="username" name="patientName"><br>
+    <label for="email">Email:</label><br>
+    <input type="text" id="email" name="patientEmail"><br>
+    <label for="password">Password:</label><br>
+    <input type="number" id="Pass" name="patientPass"><br>
+    <label for="ID">ID:</label><br>
+    <input type="number" id="ID" name="patientID"><br>
+    <input type="submit" value="Submit">
+  </form>
+<a href="http://127.0.0.1:5000/login">Back</a> 
+
+
+{% endblock content %}
