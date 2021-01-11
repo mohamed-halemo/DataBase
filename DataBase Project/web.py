@@ -1,5 +1,5 @@
 from flask import Flask,render_template,url_for,flash,redirect,request
-from forms import RegistrationForm,LoginForm
+from forms import RegistrationForm,LoginForm,ContactForm
 app = Flask(__name__)
 
 import mysql.connector
@@ -37,7 +37,7 @@ def register():
          return render_template('register.html',title='Register',form=form)
 
       if request.form.getlist('Doctor') :  ##knowing who entered a patient or a doctorpip install mysql
-         flash(f'Account Created for Doctor {form.username.data}!','success') 
+         flash(f'Account Created for Doctor {form.username.data}! now you can login','success') 
          if request.method =="POST":   #if data is correct go back to home not same page
           username = request.form["username"]
           email = request.form["email"]
@@ -47,9 +47,9 @@ def register():
           mycursor.execute(sql, val)
           mydb.commit()
           print(username,email,password)   
-         return redirect(url_for('home'))
+         return redirect(url_for('login'))
       elif request.form.getlist('Patient'):
-         flash(f'Account Created for MR/MS {form.username.data}!','success')  #if data is correct go back to home not same page
+         flash(f'Account Created for MR/MS {form.username.data}! now you can login','success')  #if data is correct go back to home not same page
          if request.method =="POST":   #if data is correct go back to home not same page
           username = request.form["username"]
           email = request.form["email"]
@@ -59,14 +59,14 @@ def register():
           mycursor.execute(sql, val)
           mydb.commit()
           print(username,email,password)   
-         return redirect(url_for('home'))
+         return redirect(url_for('login'))
      
 
 
-   
-
        
    return render_template('register.html',title='Register',form=form)
+
+
 
 @app.route('/login', methods=['GET','POST'] )
 def login():
@@ -116,13 +116,21 @@ def login():
  
  
  
- 
- 
- 
- 
- 
    return render_template('login.html',title='Register',form=form)
+
+
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+  form = ContactForm()
+ 
+  if request.method == 'POST':
+    return 'Form posted.'
+ 
+  elif request.method == 'GET':
+    return render_template('contact.html', form=form)
 
 
 if __name__ == '__main__':
    app.run(debug=True)
+
+ 
