@@ -32,6 +32,10 @@ def register():
    
 
    if form.validate_on_submit():
+      if request.form.getlist('Doctor') and request.form.getlist('Patient'):
+         flash(f'Choose only one Doctor, patient ','success') 
+         return render_template('register.html',title='Register',form=form)
+
       if request.form.getlist('Doctor') :  ##knowing who entered a patient or a doctorpip install mysql
          flash(f'Account Created for Doctor {form.username.data}!','success') 
          if request.method =="POST":   #if data is correct go back to home not same page
@@ -56,6 +60,10 @@ def register():
           mydb.commit()
           print(username,email,password)   
          return redirect(url_for('home'))
+     
+
+
+   
 
        
    return render_template('register.html',title='Register',form=form)
