@@ -72,9 +72,56 @@ def register():
 def login():
    
    form=LoginForm()
-   ##if form.validate_on_submit():
-      #### wait for data base 
-   return render_template('login.html',title='Login',form=form)
+   if form.validate_on_submit():
+      if request.form.getlist('Doctor') and request.form.getlist('Patient'):
+         flash(f'Choose only one Doctor, patient ','success') 
+         return render_template('login.html',title='login',form=form)
+
+      if request.form.getlist('Doctor') :
+         if request.method =="POST":  
+           email = request.form["email"]
+           password = request.form["password"]
+           sql= "SELECT email , password FROM Doctors WHERE email= %s and password = %s "
+           val=(email,password)
+           mycursor.execute(sql, val)
+           myresult=mycursor.fetchone()
+           print(myresult)
+           
+           if myresult==None:
+             flash(f'Incorrect email/password!','success') 
+             return render_template('login.html',title='login',form=form)  
+
+              
+
+           return redirect(url_for('home'))
+
+      elif request.form.getlist('Patient') :
+       
+         if request.method =="POST":  
+           email = request.form["email"]
+           password = request.form["password"]
+           sql= "SELECT email , password FROM Patients WHERE email= %s and password = %s "
+           val=(email,password)
+           mycursor.execute(sql, val)
+           myresult=mycursor.fetchone()
+           print(myresult)
+           
+           if myresult==None:
+             flash(f'Incorrect email/password!','success') 
+             return render_template('login.html',title='login',form=form)  
+
+              
+
+           return redirect(url_for('home'))
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   return render_template('login.html',title='Register',form=form)
 
 
 if __name__ == '__main__':
