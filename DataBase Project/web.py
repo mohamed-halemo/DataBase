@@ -113,6 +113,27 @@ def login():
               
 
            return redirect(url_for('home'))
+
+      elif request.form.getlist('Admin') :
+
+         if request.method =="POST":  
+           email = request.form["email"]
+           password = request.form["password"]
+           sql= "SELECT email , password FROM admin WHERE email= %s and password = %s "
+           val=(email,password)
+           mycursor.execute(sql, val)
+           myresult=mycursor.fetchone()
+           print(myresult)
+
+           if myresult==None:
+             flash(f'Incorrect email/password!','success') 
+             return render_template('login.html',title='login',form=form)  
+
+              
+
+           return redirect(url_for('home'))
+
+         
  
  
  
@@ -124,7 +145,18 @@ def contact():
   form = ContactForm()
  
   if request.method == 'POST':
-    return 'Form posted.'
+    
+    username = request.form["name"]
+    email = request.form["email"]
+    subject = request.form["subject"]
+    message = request.form["message"]
+    sql = "INSERT INTO contact_us (username,email,subject,message) VALUES (%s, %s, %s,%s)"
+    val = (username,email,subject,message)
+    mycursor.execute(sql, val)
+    mydb.commit()
+    print(username,email,subject,message)   
+    flash(f'Form posted ! , We are happy to hear from you !')    
+    return redirect(url_for('contact'))
  
   elif request.method == 'GET':
     return render_template('contact.html', form=form)
