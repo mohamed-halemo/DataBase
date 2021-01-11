@@ -172,7 +172,8 @@ def add():
       val = (username,email,password,ID)
       mycursor.execute(sql, val)
       mydb.commit()
-      return render_template('Home.html') 
+      flash(f'Doctor is succesfully added !')    
+      return redirect(url_for('viewD')) 
    else:
       return render_template('addDoctor.html') 
 
@@ -196,7 +197,9 @@ def addP():
       val = (username,email,password,ID)
       mycursor.execute(sql, val)
       mydb.commit()
-      return render_template('Home.html') 
+      flash(f'Patient is succesfully added !')    
+      return redirect(url_for('viewP')) 
+    
    else:
       return render_template('addPatient.html') 
 
@@ -218,7 +221,7 @@ def deleteD():
       val = (id,)
       mycursor.execute(sql, val)
       mydb.commit()
-      flash(f'Doctor succesfully removed !')    
+      flash(f'Doctor is succesfully removed !')    
       return redirect(url_for('viewD'))
    else:
       return render_template('removeDoctor.html')
@@ -232,7 +235,7 @@ def deleteP():
       val = (id,)
       mycursor.execute(sql, val)
       mydb.commit()
-      flash(f'Patient succesfully removed !')    
+      flash(f'Patient is succesfully removed !')    
       return redirect(url_for('viewP'))
    else:
       return render_template('removePatient.html')
