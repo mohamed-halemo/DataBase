@@ -115,6 +115,10 @@ def register():
                print(username,email,password)   
          return redirect(url_for('login'))
       elif request.form.getlist('Patient'):
+
+         user=User(username=form.username.data,email=form.email.data,password=form.password.data)
+         db.session.add(user)
+         db.session.commit()
            #if data is correct go back to home not same page
          if request.method =="POST":   #if data is correct go back to home not same page
           username = request.form["username"]
@@ -196,7 +200,8 @@ def login():
          if user is None:
             flash(f'Incorrect email/password!','success')                           ###########################
             return render_template('login.html',title='login',form=form)  
-
+         login_user(user)  
+ 
               
 
          return redirect(url_for('home'))
@@ -215,10 +220,15 @@ def login():
            if myresult==None:
              flash(f'Incorrect email/password!','success') 
              return render_template('login.html',title='login',form=form)  
+         user=User.query.filter_by(email=form.email.data).first()
 
-              
+         if user is None:
+            flash(f'Incorrect email/password!','success')                           ###########################
+            return render_template('login.html',title='login',form=form)  
+         login_user(user)  
+      
 
-           return render_template('admin.html',title='Register',form=form)
+         return render_template('admin.html',title='Register',form=form)
 
          
  
