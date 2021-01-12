@@ -33,32 +33,50 @@ def register():
 
    if form.validate_on_submit():
       if request.form.getlist('Doctor') and request.form.getlist('Patient'):
-         flash(f'Choose only one Doctor, patient ','success') 
+          
          return render_template('register.html',title='Register',form=form)
 
       if request.form.getlist('Doctor') :  ##knowing who entered a patient or a doctorpip install mysql
-         flash(f'Account Created for Doctor {form.username.data}! now you can login','success') 
+         
          if request.method =="POST":   #if data is correct go back to home not same page
           username = request.form["username"]
           email = request.form["email"]
           password = request.form["password"]
-          sql = "INSERT INTO Doctors (username,email,password) VALUES (%s, %s, %s)"
-          val = (username,email,password)
+          sql= "SELECT email FROM Doctors WHERE email= %s "
+          val=(email,)
           mycursor.execute(sql, val)
-          mydb.commit()
-          print(username,email,password)   
+          myresult=mycursor.fetchone()
+          if myresult!=None:
+            flash(f'Email is used before') 
+            return redirect(url_for('register'))
+          else :
+           flash(f'Account Created for Doctor {form.username.data}! now you can login','success')
+           sql = "INSERT INTO Doctors (username,email,password) VALUES (%s, %s, %s)"
+           val = (username,email,password)
+           mycursor.execute(sql, val)
+           mydb.commit()
+           print(username,email,password)   
          return redirect(url_for('login'))
       elif request.form.getlist('Patient'):
-         flash(f'Account Created for MR/MS {form.username.data}! now you can login','success')  #if data is correct go back to home not same page
+           #if data is correct go back to home not same page
          if request.method =="POST":   #if data is correct go back to home not same page
           username = request.form["username"]
           email = request.form["email"]
           password = request.form["password"]
-          sql = "INSERT INTO patients (username,email,password) VALUES (%s, %s, %s)"
-          val = (username,email,password)
+          sql= "SELECT email FROM Patients WHERE email= %s "
+          val=(email,)
           mycursor.execute(sql, val)
-          mydb.commit()
-          print(username,email,password)   
+          myresult=mycursor.fetchone()
+          if myresult!=None:
+            flash(f'Email is used before') 
+            return redirect(url_for('register'))
+          else :
+           flash(f'Account Created for MR/MS {form.username.data}! now you can login','success')
+           sql = "INSERT INTO patients (username,email,password) VALUES (%s, %s, %s)"
+           val = (username,email,password)
+           mycursor.execute(sql, val)
+           mydb.commit()
+           print(username,email,password)   
          return redirect(url_for('login'))
      
 
@@ -241,5 +259,6 @@ def deleteP():
       return render_template('removePatient.html')
 if __name__ == '__main__':
    app.run(debug=True)
+
 
  
