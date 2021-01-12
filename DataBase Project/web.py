@@ -7,6 +7,9 @@ from flask_login import LoginManager,UserMixin,login_user   ,current_user ,logou
 import secrets               
 import os   ###
 from PIL import Image
+from dateutil import parser
+
+
 app = Flask(__name__)
 
 import mysql.connector
@@ -347,8 +350,8 @@ def relate():
       val = (d_code,p_code,appointment)
       mycursor.execute(sql,val)
       mydb.commit()
-      print(mycursor.rowcount, "record inserted.")
-      flash(f'Patient is related succesfully to a doctor !')    
+      print(p_code,d_code,appointment)
+      flash(f'The appointment is successfully scheduled !')    
       return redirect(url_for('viewR')) 
     
    else:
@@ -358,7 +361,7 @@ def relate():
 
 @app.route('/viewRelation')
 def viewR():
-   mycursor.execute("SELECT doctors.username , patients.username FROM DOC_PAT  JOIN Doctors on DOC_PAT.d_code = doctors.id JOIN patients on DOC_PAT.p_code = patients.id;")
+   mycursor.execute("SELECT doctors.username , patients.username , doc_pat.appointment FROM DOC_PAT  JOIN Doctors on DOC_PAT.d_code = doctors.id JOIN patients on DOC_PAT.p_code = patients.id;")
    myresult = mycursor.fetchall()
    for x in myresult:
       print(x)
