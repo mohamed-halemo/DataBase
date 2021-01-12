@@ -337,7 +337,32 @@ def deleteP():
    else:
       return render_template('removePatient.html')
 
+@app.route('/relate', methods=['GET', 'POST'])
+def relate():
+   if request.method=="POST":
+      p_code = request.form["patientID"]
+      d_code = request.form["doctorID"]
+      appointment=request.form["appointmenttime"]
+      sql = "INSERT INTO DOC_PAT (d_code,p_code,appointment) VALUES (%s,%s,%s)"
+      val = (d_code,p_code,appointment)
+      mycursor.execute(sql,val)
+      mydb.commit()
+      print(mycursor.rowcount, "record inserted.")
+      flash(f'Patient is related succesfully to a doctor !')    
+      return redirect(url_for('viewR')) 
+    
+   else:
+      return render_template('relate.html')
 
+
+
+@app.route('/viewRelation')
+def viewR():
+   mycursor.execute("SELECT doctors.username , patients.username FROM DOC_PAT  JOIN Doctors on DOC_PAT.d_code = doctors.id JOIN patients on DOC_PAT.p_code = patients.id;")
+   myresult = mycursor.fetchall()
+   for x in myresult:
+      print(x)
+   return render_template('viewRelation.html',viewR=myresult)         
 
 
 
@@ -361,7 +386,7 @@ def save_picture(form_picture):
     output_size = (125, 125)
     i = Image.open(form_picture)
     i.thumbnail(output_size)
-    i.save(picture_path)
+    i.save(picture_path) 
 
     return picture_fn
 

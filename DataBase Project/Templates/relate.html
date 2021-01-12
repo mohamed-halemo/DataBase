@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block content %}
+<form action="http://localhost:5000/relate" method="POST">
+    <label for="ID">PatientID:</label><br>
+    <input type="number" id="ID" name="patientID"><br>
+    <label for="ID">DoctorID:</label><br>
+    <input type="number" id="ID" name="doctorID"><br>
+    <label for="appointmenttime">Appointment (date and time):</label><br>
+    <input type="datetime-local" id="appointmenttime" name="appointmenttime"><br>
+    <input type="submit" value="Submit">
+  </form>
+<a href="http://127.0.0.1:5000/login">Back</a> 
+
+
+{% endblock content %}
