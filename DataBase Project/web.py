@@ -1,9 +1,15 @@
 from flask import Flask,render_template,url_for,flash,redirect,request
-from forms import RegistrationForm,LoginForm,ContactForm
+from forms import RegistrationForm,LoginForm,ContactForm,UpdateAccountForm
+from flask_sqlalchemy import SQLAlchemy ##trying another DS
+from datetime import datetime
+from flask_bcrypt import Bcrypt
+from flask_login import LoginManager,UserMixin,login_user   ,current_user ,logout_user ,login_required           
+import secrets               
+import os   ###
+from PIL import Image
 app = Flask(__name__)
 
 import mysql.connector
-
 
 mydb = mysql.connector.connect(
   host="localhost",
@@ -16,6 +22,48 @@ mycursor = mydb.cursor()
 
 app.config['SECRET_KEY']='b0a26ce6fb663a3d7f006e020de17a9e'  #secret key for protection
 
+
+login_manager=LoginManager(app)
+login_manager.login_view='login'
+login_manager.login_message_category='info'
+
+@login_manager.user_loader
+def load_user(user_id):
+   return User.query.get(int(user_id))
+
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+db = SQLAlchemy(app)
+bcrypt=Bcrypt(app)
+
+
+class User(db.Model,UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20), unique=False, nullable=False)
+    email = db.Column(db.String(120), unique=False, nullable=False)
+    image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
+    password = db.Column(db.String(60), nullable=False)
+    posts = db.relationship('Post', backref='author', lazy=True)
+
+    def __repr__(self):
+        return f"User('{self.username}', '{self.email}', '{self.image_file}')"
+
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=True)
+    date_posted = db.Column(db.DateTime, nullable=True, default=datetime.utcnow)
+    content = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __repr__(self):
+        return f"Post('{self.title}', '{self.date_posted}')"
+
+
+db.create_all()
+
+
+
 @app.route('/')
 @app.route('/home')
 def home():
@@ -27,9 +75,15 @@ def about():
 
 @app.route('/register', methods=['GET','POST'])
 def register():
+
+
+   if current_user.is_authenticated:
+      return redirect(url_for('home'))
+
+
    form=RegistrationForm()
 
-   
+  
 
    if form.validate_on_submit():
       if request.form.getlist('Doctor') and request.form.getlist('Patient'):
@@ -39,23 +93,26 @@ def register():
       if request.form.getlist('Doctor') :  ##knowing who entered a patient or a doctorpip install mysql
          
          if request.method =="POST":   #if data is correct go back to home not same page
-          username = request.form["username"]
-          email = request.form["email"]
-          password = request.form["password"]
-          sql= "SELECT email FROM Doctors WHERE email= %s "
-          val=(email,)
-          mycursor.execute(sql, val)
-          myresult=mycursor.fetchone()
-          if myresult!=None:
-            flash(f'Email is used before') 
-            return redirect(url_for('register'))
-          else :
-           flash(f'Account Created for Doctor {form.username.data}! now you can login','success')
-           sql = "INSERT INTO Doctors (username,email,password) VALUES (%s, %s, %s)"
-           val = (username,email,password)
+           user=User(username=form.username.data,email=form.email.data,password=form.password.data)
+           db.session.add(user)
+           db.session.commit()
+           username = request.form["username"]
+           email = request.form["email"]
+           password = request.form["password"]
+           sql= "SELECT email FROM Doctors WHERE email= %s "
+           val=(email,)
            mycursor.execute(sql, val)
-           mydb.commit()
-           print(username,email,password)   
+           myresult=mycursor.fetchone()
+           if myresult!=None:
+               flash(f'Email is used before') 
+               return redirect(url_for('register'))
+           else :
+               flash(f'Account Created for Doctor {form.username.data}! now you can login','success')
+               sql = "INSERT INTO Doctors (username,email,password) VALUES (%s, %s, %s)"
+               val = (username,email,password)
+               mycursor.execute(sql, val)
+               mydb.commit()
+               print(username,email,password)   
          return redirect(url_for('login'))
       elif request.form.getlist('Patient'):
            #if data is correct go back to home not same page
@@ -88,7 +145,8 @@ def register():
 
 @app.route('/login', methods=['GET','POST'] )
 def login():
-   
+   if current_user.is_authenticated:
+      return redirect(url_for('home'))
    form=LoginForm()
    if form.validate_on_submit():
       if request.form.getlist('Doctor') and request.form.getlist('Patient'):
@@ -108,10 +166,17 @@ def login():
            if myresult==None:
              flash(f'Incorrect email/password!','success') 
              return render_template('login.html',title='login',form=form)  
+                        
+         user=User.query.filter_by(email=form.email.data).first()
+         if user is None:
+            flash(f'Incorrect email/password!','success')                           ###########################
+            return render_template('login.html',title='login',form=form)  
+
+         login_user(user)  
 
               
 
-           return redirect(url_for('home'))
+         return redirect(url_for('home'))
 
       elif request.form.getlist('Patient') :
        
@@ -127,10 +192,14 @@ def login():
            if myresult==None:
              flash(f'Incorrect email/password!','success') 
              return render_template('login.html',title='login',form=form)  
+         user=User.query.filter_by(email=form.email.data).first()
+         if user is None:
+            flash(f'Incorrect email/password!','success')                           ###########################
+            return render_template('login.html',title='login',form=form)  
 
               
 
-           return redirect(url_for('home'))
+         return redirect(url_for('home'))
 
       elif request.form.getlist('Admin') :
 
@@ -257,6 +326,62 @@ def deleteP():
       return redirect(url_for('viewP'))
    else:
       return render_template('removePatient.html')
+
+
+
+
+
+
+
+
+
+@app.route("/logout")
+def logout():
+   logout_user()
+   return redirect(url_for('home'))
+
+
+
+def save_picture(form_picture):
+    random_hex = secrets.token_hex(8)
+    _, f_ext = os.path.splitext(form_picture.filename)
+    picture_fn = random_hex + f_ext
+    picture_path = os.path.join(app.root_path, 'static/profile_pics', picture_fn)
+
+    output_size = (125, 125)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+
+    return picture_fn
+
+
+@app.route("/account", methods=['GET', 'POST'])
+@login_required
+def account():
+    form = UpdateAccountForm()
+    if form.validate_on_submit():
+        if form.picture.data:
+            picture_file = save_picture(form.picture.data)
+            current_user.image_file = picture_file
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        db.session.commit()
+        flash('Your account has been updated!', 'success')
+        return redirect(url_for('account'))
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+    image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
+    return render_template('account.html', title='Account',
+                           image_file=image_file, form=form)
+
+
+
+
+
+
+
 if __name__ == '__main__':
    app.run(debug=True)
 
