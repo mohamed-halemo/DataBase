@@ -402,6 +402,20 @@ def vRec():
       print(x)
    return render_template('viewRecovered.html',vRec=myresult)
 
+@app.route('/terminate', methods=['GET', 'POST'])
+def terminate():
+   if request.method=="POST":
+      p_code = request.form["patientID"]
+      sql="DELETE FROM DOC_PAT WHERE p_code=%s"
+      val=(p_code,)
+      mycursor.execute(sql, val)
+      mydb.commit()
+      flash(f'The Patient is terminated successfully !')    
+      return redirect(url_for('viewR')) 
+    
+   else:
+      return render_template('terminate.html') 
+
 @app.route('/admin')
 def admin():
    return render_template('admin.html')
