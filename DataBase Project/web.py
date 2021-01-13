@@ -337,7 +337,16 @@ def viewP():
    myresult = mycursor.fetchall()
    for x in myresult:
       print(x)
-   return render_template('viewPatients.html',viewP=myresult)  
+   return render_template('viewPatients.html',viewP=myresult)
+
+@app.route('/patientH')
+def patientH():
+   mycursor.execute("SELECT * FROM patients")
+   row_headers=[x[0] for x in mycursor.description] 
+   myresult = mycursor.fetchall()
+   for x in myresult:
+      print(x)
+   return render_template('patientH.html',patientH=myresult)    
 
 @app.route('/removeDoctor', methods=['GET', 'POST'])
 def deleteD():

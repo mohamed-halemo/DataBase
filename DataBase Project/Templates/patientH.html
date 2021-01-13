@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block content %}
+<table>
+    <tr>
+      <th>Patient name</th>
+      <th>ID</th>
+      <th>Scan Type</th>
+    </tr>
+    {% for data in patientH %}
+    <tr>
+        <th>{{data.0}}</th>
+        <th>{{data.3}}</th>
+        <th>{{data.4}}</th>
+
+    </tr>
+    {% endfor %}
+</table>    
+<a href="http://127.0.0.1:5000/doctor">Back</a> 
+
+
+{% endblock content %}
