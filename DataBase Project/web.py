@@ -311,6 +311,23 @@ def addP():
     
    else:
       return render_template('addPatient.html') 
+      
+@app.route('/typeP', methods=['GET', 'POST'])
+def typeP():
+   if request.method=="POST":
+      typeP = request.form["typeP"]
+      #user=User(typeP=typeP)
+      #db.session.add(user)
+      #db.session.commit()  #ana sayeb el database bta3et add patient 3adlha bs bl t3delat el gdedaa 
+      #sql = "INSERT INTO patients (username,email,password,ID) VALUES (%s, %s, %s, %s)"
+      #val = (username,email,password,ID)
+      #mycursor.execute(sql, val)
+      #mydb.commit()
+      flash(f'Your photography type is succesfully added !')    
+      return redirect(url_for('viewP')) 
+    
+   else:
+      return render_template('typeP.html') 
 
 @app.route('/viewPatients')
 def viewP():

@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block content %}
+<form action="http://localhost:5000/typeP" method="POST">
+    <label for="typeP">Please enter your photography type:</label><br>
+    <input type="text" id="typeP" name="typeP"><br>
+    <input type="submit" value="Submit">
+  </form>
+<a href="http://127.0.0.1:5000/patient">Back</a> 
+
+{% endblock content %}
