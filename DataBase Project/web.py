@@ -360,7 +360,7 @@ def relate():
       mycursor.execute(sql,val)
       mydb.commit()
       print(p_code,d_code,appointment)
-      flash(f'the Patient is assigned to a Doctor !')    
+      flash(f'The Patient is assigned to a Doctor !')    
       return redirect(url_for('viewR')) 
     
    else:
@@ -370,7 +370,7 @@ def relate():
 
 @app.route('/viewRelation')
 def viewR():
-   mycursor.execute("SELECT doctors.username , patients.username , doc_pat.appointment FROM DOC_PAT  JOIN Doctors on DOC_PAT.d_code = doctors.id JOIN patients on DOC_PAT.p_code = patients.id;")
+   mycursor.execute("SELECT doctors.username,doctors.id , patients.username,patients.id , doc_pat.appointment FROM DOC_PAT  JOIN Doctors on DOC_PAT.d_code = doctors.id JOIN patients on DOC_PAT.p_code = patients.id;")
    myresult = mycursor.fetchall()
    for x in myresult:
       print(x)
@@ -435,7 +435,7 @@ def yourPatient():
 def yourDoctor():
    if request.method=="POST":
       p_code = request.form["patientID"]
-      sql="SELECT Doctors.username Patients.id, doc_pat.appointment FROM DOC_PAT  JOIN Patients on DOC_PAT.p_code = Patients.id JOIN Doctors on DOC_PAT.d_code = Doctors.id WHERE p_code= %s "
+      sql="SELECT Doctors.username,Doctors.id ,doc_pat.appointment FROM DOC_PAT  JOIN Patients on DOC_PAT.p_code = Patients.id JOIN Doctors on DOC_PAT.d_code = Doctors.id WHERE p_code= %s "
       val=(p_code,)
       mycursor.execute(sql, val)
       myresult = mycursor.fetchall()
@@ -444,7 +444,7 @@ def yourDoctor():
       return render_template('vyourDoctor.html',yourDoctor=myresult)        
     
    else:
-      return render_template('yourPatient.html') 
+      return render_template('yourDoctor.html') 
 
 @app.route('/admin')
 def admin():
@@ -458,7 +458,7 @@ def doctor():
 
 @app.route('/patient')
 def patient():
-   return render_template('doctor.html')
+   return render_template('patient.html')
 
 
 

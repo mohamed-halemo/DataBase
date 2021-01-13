@@ -2,8 +2,10 @@
 {% block content %}
 <table>
     <tr>
-        <th>Doctor username</th>
-        <th>Patient username</th>
+        <th>Doctor name</th>
+        <th>Doctor ID</th>
+        <th>Patient name</th>
+        <th>Patient ID</th>
         <th>Appointment time</th>
     </tr>
     {% for data in viewR %}
@@ -11,6 +13,8 @@
         <th>{{data.0}}</th>
         <th>{{data.1}}</th>
         <th>{{data.2}}</th>
+        <th>{{data.3}}</th>
+        <th>{{data.4}}</th>
     {% endfor %}
 </table>    
 <a href="http://127.0.0.1:5000/admin">Back</a> 
