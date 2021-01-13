@@ -1,13 +1,13 @@
 {% extends "layout.html" %}
 {% block content %}
-<form action="http://localhost:5000/relate" method="POST">
+<form action="http://localhost:5000/recoveredPatient" method="POST">
     <label for="ID">PatientID:</label><br>
     <input type="number" id="ID" name="patientID"><br>
     <label for="recoveredTime">Recovered time (date and time):</label><br>
     <input type="datetime-local" id="recoveredTime" name="recoveredTime"><br>
     <input type="submit" value="Submit">
   </form>
-<a href="http://127.0.0.1:5000/login">Back</a> 
+<a href="http://127.0.0.1:5000/admin">Back</a> 
 
 
 {% endblock content %}

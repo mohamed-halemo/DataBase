@@ -360,7 +360,7 @@ def relate():
       mycursor.execute(sql,val)
       mydb.commit()
       print(p_code,d_code,appointment)
-      flash(f'The appointment is successfully scheduled !')    
+      flash(f'the Patient is assigned to a Doctor !')    
       return redirect(url_for('viewR')) 
     
    else:
@@ -382,6 +382,10 @@ def rec():
    if request.method=="POST":
       p_code = request.form["patientID"]
       recoveredTime=request.form["recoveredTime"]
+      sql = "INSERT INTO REC_PATIENT (p_id,date_rec) VALUES (%s,%s)"
+      val = (p_code,recoveredTime)
+      mycursor.execute(sql, val)
+      mydb.commit()
       flash(f'Informations succesfully updated !')
       return redirect(url_for('vRec')) 
    else:
@@ -390,6 +394,10 @@ def rec():
 
 @app.route('/viewRecovered')
 def vRec():
+   mycursor.execute("SELECT * FROM rec_patient")
+    
+   myresult = mycursor.fetchall()
+
    for x in myresult:
       print(x)
    return render_template('viewRecovered.html',vRec=myresult)
