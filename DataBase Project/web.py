@@ -377,7 +377,22 @@ def viewR():
    return render_template('viewRelation.html',viewR=myresult)         
 
 
+@app.route('/recoveredPatient', methods=['GET', 'POST'])
+def rec():
+   if request.method=="POST":
+      p_code = request.form["patientID"]
+      recoveredTime=request.form["recoveredTime"]
+      flash(f'Informations succesfully updated !')
+      return redirect(url_for('vRec')) 
+   else:
+      return render_template('recoveredPatient.html')
+      
 
+@app.route('/viewRecovered')
+def vRec():
+   for x in myresult:
+      print(x)
+   return render_template('viewRecovered.html',vRec=myresult)
 
 @app.route('/admin')
 def admin():
@@ -436,8 +451,6 @@ def account():
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
     return render_template('account.html', title='Account',
                            image_file=image_file, form=form)
-
-
 
 
 
