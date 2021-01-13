@@ -444,7 +444,16 @@ def yourDoctor():
       return render_template('vyourDoctor.html',yourDoctor=myresult)        
     
    else:
-      return render_template('yourDoctor.html') 
+      return render_template('yourDoctor.html')
+
+@app.route('/available')
+def available():
+   mycursor.execute("SELECT * FROM Doctors")
+   row_headers=[x[0] for x in mycursor.description] 
+   myresult = mycursor.fetchall()
+   for x in myresult:
+      print(x)
+   return render_template('available.html',available=myresult)      
 
 @app.route('/admin')
 def admin():
