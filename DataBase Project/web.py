@@ -223,6 +223,7 @@ def login():
            if myresult==None:
              flash(f'Incorrect email/password!','success') 
              return render_template('login.html',title='login',form=form)  
+         
          user=User.query.filter_by(email=form.email.data).first()
 
          if user is None:
@@ -267,6 +268,10 @@ def add():
       username = request.form["doctorName"]
       email = request.form["doctorEmail"]
       password= request.form["doctorPass"]
+      user=User(username=username,email=email,password=password)
+
+      db.session.add(user)
+      db.session.commit()
       ID = request.form["doctorID"]
       sql = "INSERT INTO Doctors (username,email,password,ID) VALUES (%s, %s,%s, %s)"
       val = (username,email,password,ID)
@@ -292,6 +297,10 @@ def addP():
       username = request.form["patientName"]
       email = request.form["patientEmail"]
       password= request.form["patientPass"]
+      user=User(username=username,email=email,password=password)
+
+      db.session.add(user)
+      db.session.commit()
       ID = request.form["patientID"]
       sql = "INSERT INTO patients (username,email,password,ID) VALUES (%s, %s, %s, %s)"
       val = (username,email,password,ID)
@@ -375,6 +384,14 @@ def admin():
    return render_template('admin.html')
 
 
+@app.route('/doctor')
+def doctor():
+   return render_template('doctor.html')
+
+
+@app.route('/patient')
+def patient():
+   return render_template('doctor.html')
 
 
 
