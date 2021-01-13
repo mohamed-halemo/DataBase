@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block content %}
+<form action="http://localhost:5000/yourDoctor" method="POST">
+    <label for="ID">Please enter your ID:</label><br>
+    <input type="number" id="ID" name="patientID"><br>
+    <input type="submit" value="Submit">
+  </form>
+  
+<a href="http://127.0.0.1:5000/admin">Back</a> 
+
+
+{% endblock content %}

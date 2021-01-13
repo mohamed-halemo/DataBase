@@ -416,6 +416,36 @@ def terminate():
    else:
       return render_template('terminate.html') 
 
+@app.route('/yourPatient', methods=['GET', 'POST'])
+def yourPatient():
+   if request.method=="POST":
+      d_code = request.form["doctorID"]
+      sql="SELECT Patients.username, Patients.id, doc_pat.appointment FROM DOC_PAT  JOIN Doctors on DOC_PAT.d_code = Doctors.id JOIN Patients on DOC_PAT.p_code = Patients.id WHERE d_code= %s "
+      val=(d_code,)
+      mycursor.execute(sql, val)
+      myresult = mycursor.fetchall()
+      for x in myresult:
+         print(x)
+      return render_template('vyourPatient.html',yourPatient=myresult)        
+    
+   else:
+      return render_template('yourPatient.html')  
+
+@app.route('/yourDoctor', methods=['GET', 'POST'])
+def yourDoctor():
+   if request.method=="POST":
+      p_code = request.form["patientID"]
+      sql="SELECT Doctors.username Patients.id, doc_pat.appointment FROM DOC_PAT  JOIN Patients on DOC_PAT.p_code = Patients.id JOIN Doctors on DOC_PAT.d_code = Doctors.id WHERE p_code= %s "
+      val=(p_code,)
+      mycursor.execute(sql, val)
+      myresult = mycursor.fetchall()
+      for x in myresult:
+         print(x)
+      return render_template('vyourDoctor.html',yourDoctor=myresult)        
+    
+   else:
+      return render_template('yourPatient.html') 
+
 @app.route('/admin')
 def admin():
    return render_template('admin.html')
