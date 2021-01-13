@@ -315,8 +315,9 @@ def addP():
 @app.route('/typeP', methods=['GET', 'POST'])
 def typeP():
    if request.method=="POST":
+      ID = request.form["patientID"]
       typeP = request.form["typeP"]
-      #user=User(typeP=typeP)
+      user=User(typeP=typeP)
       #db.session.add(user)
       #db.session.commit()  #ana sayeb el database bta3et add patient 3adlha bs bl t3delat el gdedaa 
       #sql = "INSERT INTO patients (username,email,password,ID) VALUES (%s, %s, %s, %s)"
