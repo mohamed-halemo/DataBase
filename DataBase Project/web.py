@@ -394,7 +394,7 @@ def rec():
 
 @app.route('/viewRecovered')
 def vRec():
-   mycursor.execute("SELECT * FROM rec_patient")
+   mycursor.execute("SELECT patients.username,patients.id ,date_rec FROM REC_PATIENT JOIN PATIENTS on REC_PATIENT.p_id = patients.id")
     
    myresult = mycursor.fetchall()
 

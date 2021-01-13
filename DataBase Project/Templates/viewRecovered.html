@@ -4,12 +4,14 @@
     <tr>
         
         <th>Patient username</th>
+        <th>Patient ID</th>
         <th>Recovered time</th>
     </tr>
     {% for data in vRec %}
     <tr>
         <th>{{data.0}}</th>
         <th>{{data.1}}</th>
+        <th>{{data.2}}</th>
         
     {% endfor %}
 </table>    
