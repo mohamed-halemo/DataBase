@@ -15,12 +15,18 @@
     {% else %}
         <title>Radiology department</title>
     {% endif %}
+    <style>  
+      body  
+      {  
+      background-image:url("https://image.freepik.com/free-vector/healthcare-background-with-medical-symbols-hexagonal-frame_1017-26363.jpg");  
+      }  
+      </style>  
 </head>
-<body>
+<body >
     <header class="site-header">
       <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
         <div class="container">
-          <a class="navbar-brand mr-4" href="/">Radiology department</a>
+          <a class="navbar-brand mr-4" href="/">Emergency</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
@@ -34,6 +40,7 @@
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
               {% if current_user.is_authenticated %}
+              <a class="nav-item nav-link" href="{{ url_for('new_post') }}"> Post a question </a>
               <a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
 
               <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
