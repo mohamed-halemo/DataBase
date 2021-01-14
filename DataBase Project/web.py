@@ -235,7 +235,7 @@ def login():
          login_user(user)  
       
 
-         return render_template('admin.html',title='Register',form=form)
+         return redirect(url_for('admin'))
 
          
  
