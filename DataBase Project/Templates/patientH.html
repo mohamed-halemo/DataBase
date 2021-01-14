@@ -1,20 +1,25 @@
 {% extends "layout.html" %}
-{% block content %}
-<table>
+{% block content %}  
+<table class="table table-success table-striped">
+  <thead>
     <tr>
-      <th>Patient name</th>
-      <th>ID</th>
-      <th>Scan Type</th>
+      <th scope="col">#</th>
+      <th scope="col">Patient name</th>
+      <th scope="col">Patient ID</th>
+      <th scope="col">Scan type</th>
     </tr>
+  </thead>
+  <tbody>
     {% for data in patientH %}
     <tr>
-        <th>{{data.0}}</th>
-        <th>{{data.3}}</th>
-        <th>{{data.4}}</th>
-
+      <th scope="row">{{loop.index}}</th>
+      <td>{{data.0}}</td>
+      <td>{{data.3}}</td>
+      <td>{{data.4}}</td>
     </tr>
     {% endfor %}
-</table>    
+  </tbody>
+</table>  
 <a href="http://127.0.0.1:5000/doctor">Back</a> 
 
 

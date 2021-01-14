@@ -1,16 +1,100 @@
 {% extends "layout.html" %}
 {% block content %}
-
-<a href="http://127.0.0.1:5000/addDoctor">Add doctor</a> 
-<a href="http://127.0.0.1:5000/viewDoctors">View doctors</a> 
-<a href="http://127.0.0.1:5000/addPatient">Add patient</a> 
-<a href="http://127.0.0.1:5000/viewPatients">View patients</a>
-<a href="http://127.0.0.1:5000/removeDoctor">Remove doctor</a> 
-<a href="http://127.0.0.1:5000/removePatient">Remove patient</a>  
-<a href="http://127.0.0.1:5000/relate">Relate patient to doctor</a> 
-<a href="http://127.0.0.1:5000/viewRelation">view list of patient and its doctor</a>  
-<a href="http://127.0.0.1:5000/recoveredPatient">Recover patient</a> 
-<a href="http://127.0.0.1:5000/viewRecovered">View recovered patients</a>  
-<a href="http://127.0.0.1:5000/terminate">Delete recovered patient</a>
+<div class="row">
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">
+          <a href="http://127.0.0.1:5000/addDoctor" class="btn btn-primary">Add doctor</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">
+          <a href="http://127.0.0.1:5000/viewDoctors" class="btn btn-primary">View doctors</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">
+          <a href="http://127.0.0.1:5000/addPatient" class="btn btn-primary">Add patient</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">
+          <a href="http://127.0.0.1:5000/viewPatients" class="btn btn-primary">View patients</a>
+        </div>
+      </div>
+    </div>
+  </div> 
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">        
+          <a href="http://127.0.0.1:5000/removeDoctor" class="btn btn-primary">Remove doctor</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">          
+          <a href="http://127.0.0.1:5000/removePatient" class="btn btn-primary">Remove patient</a>
+        </div>
+      </div>
+    </div>
+  </div>  
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">          
+          <a href="http://127.0.0.1:5000/relate" class="btn btn-primary">Relate patient to doctor</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">         
+          <a href="http://127.0.0.1:5000/viewRelation" class="btn btn-primary">View list of patient and its doctor</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">         
+          <a href="http://127.0.0.1:5000/recoveredPatient" class="btn btn-primary">Recover patient</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">
+          <a href="http://127.0.0.1:5000/viewRecovered" class="btn btn-primary">View recovered patients</a>
+        </div>
+      </div>
+    </div>
+  </div>    
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">
+          <a href="http://127.0.0.1:5000/terminate" class="btn btn-primary">Delete recovered patient</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">
+          <a href="http://127.0.0.1:5000/viewContact" class="btn btn-primary">Contacts inbox</a>
+        </div>
+      </div>
+    </div>
+  </div>  
 
 {% endblock content %}

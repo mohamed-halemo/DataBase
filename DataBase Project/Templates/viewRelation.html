@@ -1,22 +1,29 @@
 {% extends "layout.html" %}
-{% block content %}
-<table>
-    <tr>
-        <th>Doctor name</th>
-        <th>Doctor ID</th>
-        <th>Patient name</th>
-        <th>Patient ID</th>
-        <th>Appointment time</th>
-    </tr>
-    {% for data in viewR %}
-    <tr>
-        <th>{{data.0}}</th>
-        <th>{{data.1}}</th>
-        <th>{{data.2}}</th>
-        <th>{{data.3}}</th>
-        <th>{{data.4}}</th>
-    {% endfor %}
-</table>    
+{% block content %}   
+<table class="table table-success table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Doctor name</th>
+        <th scope="col">Doctor ID</th>
+        <th scope="col">Patient name</th>
+        <th scope="col">Patient ID</th>
+        <th scope="col">Appointment time</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for data in viewR %}
+      <tr>
+        <th scope="row">{{loop.index}}</th>
+        <td>{{data.0}}</td>
+        <td>{{data.1}}</td>
+        <td>{{data.2}}</td>
+        <td>{{data.3}}</td>
+        <td>{{data.4}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 <a href="http://127.0.0.1:5000/admin">Back</a> 
 
 

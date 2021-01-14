@@ -1,6 +1,22 @@
 {% extends "layout.html" %}
 {% block content %}
-<a href="http://127.0.0.1:5000/yourPatient"> View your patient</a>  
-<a href="http://127.0.0.1:5000/patientH"> Patients history</a>
-<a href="http://127.0.0.1:5000/download"> Download IMG </a>
+<div class="row">
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Special title treatment</h5>
+          <a href="http://127.0.0.1:5000/yourPatient" class="btn btn-primary">View your patient</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Special title treatment</h5>
+          <a href="http://127.0.0.1:5000/patientH" class="btn btn-primary">Patients history</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
 {% endblock content %}

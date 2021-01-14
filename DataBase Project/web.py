@@ -265,6 +265,15 @@ def contact():
   elif request.method == 'GET':
     return render_template('contact.html', form=form)
 
+@app.route('/viewContact')
+def viewC():
+   mycursor.execute("SELECT * FROM contact_us")
+   row_headers=[x[0] for x in mycursor.description] 
+   myresult = mycursor.fetchall()
+   for x in myresult:
+      print(x)
+   return render_template('viewContact.html',viewC=myresult)    
+
 @app.route('/addDoctor', methods=['GET', 'POST'])
 def add():
    if request.method=="POST":
