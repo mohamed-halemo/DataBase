@@ -492,7 +492,16 @@ def available():
    myresult = mycursor.fetchall()
    for x in myresult:
       print(x)
-   return render_template('available.html',available=myresult)      
+   return render_template('available.html',available=myresult)    
+
+@app.route('/stats')
+def stats():
+   mycursor.execute("SELECT 'Doctors' AS table_name, COUNT(id) FROM doctors UNION SELECT 'All Patients' AS table_name, COUNT(id) FROM patients UNION SELECT 'Recovered' AS table_name, COUNT(p_id) FROM rec_patient")
+   row_headers=[x[0] for x in mycursor.description] 
+   myresult = mycursor.fetchall()
+   for x in myresult:
+      print(x)
+   return render_template('stats.html',stats=myresult)      
 
 @app.route('/admin')
 def admin():
