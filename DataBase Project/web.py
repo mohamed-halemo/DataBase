@@ -1,14 +1,15 @@
 from flask import Flask,render_template,url_for,flash,redirect,request
 from forms import RegistrationForm,LoginForm,ContactForm,UpdateAccountForm,PostForm
 from flask_sqlalchemy import SQLAlchemy ##trying another DS
-from datetime import datetime
+from datetime import datetime,timedelta
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager,UserMixin,login_user   ,current_user ,logout_user ,login_required           
 import secrets               
 import os   ###
 from PIL import Image
 from dateutil import parser
-
+from cal_setup import get_calendar_service
+import random
 
 app = Flask(__name__)
 
@@ -267,255 +268,414 @@ def contact():
 
 @app.route('/viewContact')
 def viewC():
-   mycursor.execute("SELECT * FROM contact_us")
-   row_headers=[x[0] for x in mycursor.description] 
-   myresult = mycursor.fetchall()
-   for x in myresult:
-      print(x)
-   return render_template('viewContact.html',viewC=myresult)    
+   if current_user.is_authenticated:
+
+      mycursor.execute("SELECT * FROM contact_us")
+      row_headers=[x[0] for x in mycursor.description] 
+      myresult = mycursor.fetchall()
+      for x in myresult:
+         print(x)
+      return render_template('viewContact.html',viewC=myresult)    
+   else :
+      form=LoginForm()
+      return render_template('login.html',title='login',form=form)      
 
 @app.route('/addDoctor', methods=['GET', 'POST'])
 def add():
-   if request.method=="POST":
-      username = request.form["doctorName"]
-      email = request.form["doctorEmail"]
-      password= request.form["doctorPass"]
-      user=User(username=username,email=email,password=password)
+   if current_user.is_authenticated:
 
-      db.session.add(user)
-      db.session.commit()
-      ID = request.form["doctorID"]
-      sql = "INSERT INTO Doctors (username,email,password,ID) VALUES (%s, %s,%s, %s)"
-      val = (username,email,password,ID)
-      mycursor.execute(sql, val)
-      mydb.commit()
-      flash(f'Doctor is succesfully added !')    
-      return redirect(url_for('viewD')) 
-   else:
-      return render_template('addDoctor.html') 
+      if request.method=="POST":
+         username = request.form["doctorName"]
+         email = request.form["doctorEmail"]
+         password= request.form["doctorPass"]
+         user=User(username=username,email=email,password=password)
+
+         db.session.add(user)
+         db.session.commit()
+         ID = request.form["doctorID"]
+         sql = "INSERT INTO Doctors (username,email,password,ID) VALUES (%s, %s,%s, %s)"
+         val = (username,email,password,ID)
+         mycursor.execute(sql, val)
+         mydb.commit()
+         flash(f'Doctor is succesfully added !')    
+         return redirect(url_for('viewD')) 
+      else:
+         return render_template('addDoctor.html') 
+   else :
+      form=LoginForm()
+      return render_template('login.html',title='login',form=form)         
 
 @app.route('/viewDoctors')
 def viewD():
-   mycursor.execute("SELECT * FROM Doctors")
-   row_headers=[x[0] for x in mycursor.description] 
-   myresult = mycursor.fetchall()
-   for x in myresult:
-      print(x)
-   return render_template('viewDoctors.html',viewD=myresult)
+   if current_user.is_authenticated:
+
+      mycursor.execute("SELECT * FROM Doctors")
+      row_headers=[x[0] for x in mycursor.description] 
+      myresult = mycursor.fetchall()
+      for x in myresult:
+         print(x)
+      return render_template('viewDoctors.html',viewD=myresult)
+   else :
+      form=LoginForm()
+      return render_template('login.html',title='login',form=form)      
 
 @app.route('/addPatient', methods=['GET', 'POST'])
 def addP():
-   if request.method=="POST":
-      username = request.form["patientName"]
-      email = request.form["patientEmail"]
-      password= request.form["patientPass"]
-      user=User(username=username,email=email,password=password)
+   if current_user.is_authenticated:
 
-      db.session.add(user)
-      db.session.commit()
-      ID = request.form["patientID"]
-      sql = "INSERT INTO patients (username,email,password,ID) VALUES (%s, %s, %s, %s)"
-      val = (username,email,password,ID)
-      mycursor.execute(sql, val)
-      mydb.commit()
-      flash(f'Patient is succesfully added !')    
-      return redirect(url_for('viewP')) 
+      if request.method=="POST":
+         username = request.form["patientName"]
+         email = request.form["patientEmail"]
+         password= request.form["patientPass"]
+         user=User(username=username,email=email,password=password)
+
+         db.session.add(user)
+         db.session.commit()
+         ID = request.form["patientID"]
+         sql = "INSERT INTO patients (username,email,password,ID) VALUES (%s, %s, %s, %s)"
+         val = (username,email,password,ID)
+         mycursor.execute(sql, val)
+         mydb.commit()
+         flash(f'Patient is succesfully added !')    
+         return redirect(url_for('viewP')) 
     
-   else:
-      return render_template('addPatient.html') 
+      else:
+         return render_template('addPatient.html') 
+   else :
+      form=LoginForm()
+      return render_template('login.html',title='login',form=form)         
       
 @app.route('/typeP', methods=['GET', 'POST'])
 def typeP():
-   if request.method=="POST":
-      ID = request.form["patientID"]
-      typeP = request.form["typeP"]
-      #user=User(typeP=typeP)
-      #db.session.add(user)
-      #db.session.commit()  #ana sayeb el database bta3et add patient 3adlha bs bl t3delat el gdedaa 
-      sql = "UPDATE patients SET type = %s  WHERE id = %s "
-      val = (typeP,ID)
-      mycursor.execute(sql, val)
-      mydb.commit()
-      flash(f'Your scanning type is succesfully added !')    
-      return redirect(url_for('patient')) 
+   if current_user.is_authenticated:
+
+      if request.method=="POST":
+         ID = request.form["patientID"]
+         typeP = request.form["typeP"]
+         #user=User(typeP=typeP)
+         #db.session.add(user)
+         #db.session.commit()  #ana sayeb el database bta3et add patient 3adlha bs bl t3delat el gdedaa 
+         sql = "UPDATE patients SET type = %s  WHERE id = %s "
+         val = (typeP,ID)
+         mycursor.execute(sql, val)
+         mydb.commit()
+         flash(f'Your scanning type is succesfully added !')    
+         return redirect(url_for('patient')) 
     
-   else:
-      return render_template('typeP.html') 
+      else:
+         return render_template('typeP.html') 
+   else :
+      form=LoginForm()
+      return render_template('login.html',title='login',form=form)         
 
 @app.route('/viewPatients')
 def viewP():
-   mycursor.execute("SELECT * FROM patients")
-   row_headers=[x[0] for x in mycursor.description] 
-   myresult = mycursor.fetchall()
-   for x in myresult:
-      print(x)
-   return render_template('viewPatients.html',viewP=myresult)
+   if current_user.is_authenticated:
+
+      mycursor.execute("SELECT * FROM patients")
+      row_headers=[x[0] for x in mycursor.description] 
+      myresult = mycursor.fetchall()
+      for x in myresult:
+         print(x)
+      return render_template('viewPatients.html',viewP=myresult)
+   else :
+      form=LoginForm()
+      return render_template('login.html',title='login',form=form)      
 
 @app.route('/patientH')
 def patientH():
-   mycursor.execute("SELECT * FROM patients")
-   row_headers=[x[0] for x in mycursor.description] 
-   myresult = mycursor.fetchall()
-   for x in myresult:
-      print(x)
-   return render_template('patientH.html',patientH=myresult)    
+   if current_user.is_authenticated:
+
+      mycursor.execute("SELECT * FROM patients")
+      row_headers=[x[0] for x in mycursor.description] 
+      myresult = mycursor.fetchall()
+      for x in myresult:
+         print(x)
+      return render_template('patientH.html',patientH=myresult)   
+   else :
+      form=LoginForm()
+      return render_template('login.html',title='login',form=form)       
 
 @app.route('/removeDoctor', methods=['GET', 'POST'])
 def deleteD():
-   if request.method=="POST":
-      id = request.form["doctorID"]
-      mycursor = mydb.cursor()
-      sql = "DELETE FROM Doctors WHERE id = %s"
-      val = (id,)
-      mycursor.execute(sql, val)
-      mydb.commit()
-      flash(f'Doctor is succesfully removed !')    
-      return redirect(url_for('viewD'))
-   else:
-      return render_template('removeDoctor.html')
+   if current_user.is_authenticated:
+
+      if request.method=="POST":
+         id = request.form["doctorID"]
+         mycursor = mydb.cursor()
+         sql = "DELETE FROM Doctors WHERE id = %s"
+         val = (id,)
+         mycursor.execute(sql, val)
+         mydb.commit()
+         flash(f'Doctor is succesfully removed !')    
+         return redirect(url_for('viewD'))
+      else:
+         return render_template('removeDoctor.html')
+   else :
+      form=LoginForm()
+      return render_template('login.html',title='login',form=form)         
 
 @app.route('/removePatient', methods=['GET', 'POST'])
 def deleteP():
-   if request.method=="POST":
-      id = request.form["patientID"]
-      mycursor = mydb.cursor()
-      sql = "DELETE FROM patients WHERE id = %s"
-      val = (id,)
-      mycursor.execute(sql, val)
-      mydb.commit()
-      flash(f'Patient is succesfully removed !')    
-      return redirect(url_for('viewP'))
-   else:
-      return render_template('removePatient.html')
+   if current_user.is_authenticated:
+
+      if request.method=="POST":
+         id = request.form["patientID"]
+         mycursor = mydb.cursor()
+         sql = "DELETE FROM patients WHERE id = %s"
+         val = (id,)
+         mycursor.execute(sql, val)
+         mydb.commit()
+         flash(f'Patient is succesfully removed !')    
+         return redirect(url_for('viewP'))
+      else:
+         return render_template('removePatient.html')
+   else :
+      form=LoginForm()
+      return render_template('login.html',title='login',form=form)         
 
 @app.route('/relate', methods=['GET', 'POST'])
 def relate():
-   if request.method=="POST":
-      p_code = request.form["patientID"]
-      d_code = request.form["doctorID"]
-      appointment=request.form["appointmenttime"]
-      sql = "INSERT INTO DOC_PAT (d_code,p_code,appointment) VALUES (%s,%s,%s)"
-      val = (d_code,p_code,appointment)
-      mycursor.execute(sql,val)
-      mydb.commit()
-      print(p_code,d_code,appointment)
-      flash(f'The Patient is assigned to a Doctor !')    
-      return redirect(url_for('viewR')) 
-    
-   else:
-      return render_template('relate.html')
+   if current_user.is_authenticated:
+
+      if request.method=="POST":
+         p_code = request.form["patientID"]
+         d_code = request.form["doctorID"]
+         appointment=request.form["appointmenttime"]
+         hour=request.form["hour"]
+         sql = "INSERT INTO DOC_PAT (d_code,p_code,appointment,hour) VALUES (%s,%s,%s,%s)"
+         val = (d_code,p_code,appointment,hour)
+         mycursor.execute(sql,val)
+         mydb.commit()
+         print(p_code,d_code,appointment)
+         flash(f'The Patient is assigned to a Doctor !')  
+       #####################################################################   
+
+
+# creates one hour event tomorrow 10 AM IST
+         service = get_calendar_service()
+
+         d = datetime.now().date() 
+         tomorrow = datetime(d.year, d.month, d.day,int (hour))+timedelta(days=1) #CHANGE HERE
+         start = tomorrow.isoformat()
+         end = (tomorrow + timedelta(hours=1)).isoformat()
+
+         event_result = service.events().insert(calendarId='primary',
+         body={
+              "summary": 'Automating calendar',
+              "description": 'This is a tutorial example of automating google calendar with python',
+              "start": {"dateTime": start, "timeZone": 'GMT-10'},
+              "end": {"dateTime": end, "timeZone": 'GMT-10'},
+            }
+         ).execute()
+
+         print("created event")
+         print("id: ", event_result['id'])
+         print("summary: ", event_result['summary'])
+         print("starts at: ", event_result['start']['dateTime'])
+         print("ends at: ", event_result['end']['dateTime'])
+
+
+  
+         return redirect(url_for('viewR')) 
+
+
+
+
+
+
+###########################################################################
+      else:
+         return render_template('relate.html')
+
+   else :
+      form=LoginForm()
+      return render_template('login.html',title='login',form=form)  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 @app.route('/viewRelation')
 def viewR():
-   mycursor.execute("SELECT doctors.username,doctors.id , patients.username,patients.id , doc_pat.appointment FROM DOC_PAT  JOIN Doctors on DOC_PAT.d_code = doctors.id JOIN patients on DOC_PAT.p_code = patients.id;")
-   myresult = mycursor.fetchall()
-   for x in myresult:
-      print(x)
-   return render_template('viewRelation.html',viewR=myresult)         
+   if current_user.is_authenticated:
+
+      mycursor.execute("SELECT doctors.username,doctors.id , patients.username,patients.id , doc_pat.appointment FROM DOC_PAT  JOIN Doctors on DOC_PAT.d_code = doctors.id JOIN patients on DOC_PAT.p_code = patients.id;")
+      myresult = mycursor.fetchall()
+      for x in myresult:
+         print(x)
+      return render_template('viewRelation.html',viewR=myresult)    
+   else :
+      form=LoginForm()
+      return render_template('login.html',title='login',form=form)           
 
 
 @app.route('/recoveredPatient', methods=['GET', 'POST'])
 def rec():
-   if request.method=="POST":
-      p_code = request.form["patientID"]
-      recoveredTime=request.form["recoveredTime"]
-      sql = "INSERT INTO REC_PATIENT (p_id,date_rec) VALUES (%s,%s)"
-      val = (p_code,recoveredTime)
-      mycursor.execute(sql, val)
-      mydb.commit()
-      flash(f'Informations succesfully updated !')
-      return redirect(url_for('vRec')) 
-   else:
-      return render_template('recoveredPatient.html')
+   if current_user.is_authenticated:
+
+      if request.method=="POST":
+         p_code = request.form["patientID"]
+         recoveredTime=request.form["recoveredTime"]
+         sql = "INSERT INTO REC_PATIENT (p_id,date_rec) VALUES (%s,%s)"
+         val = (p_code,recoveredTime)
+         mycursor.execute(sql, val)
+         mydb.commit()
+         flash(f'Informations succesfully updated !')
+         return redirect(url_for('vRec')) 
+      else:
+         return render_template('recoveredPatient.html')
+   else :
+      form=LoginForm()
+      return render_template('login.html',title='login',form=form)         
       
 
 @app.route('/viewRecovered')
 def vRec():
-   mycursor.execute("SELECT patients.username,patients.id ,date_rec FROM REC_PATIENT JOIN PATIENTS on REC_PATIENT.p_id = patients.id")
-    
-   myresult = mycursor.fetchall()
+   if current_user.is_authenticated:
 
-   for x in myresult:
-      print(x)
-   return render_template('viewRecovered.html',vRec=myresult)
+      mycursor.execute("SELECT patients.username,patients.id ,date_rec FROM REC_PATIENT JOIN PATIENTS on REC_PATIENT.p_id = patients.id")
+    
+      myresult = mycursor.fetchall()
+
+      for x in myresult:
+         print(x)
+      return render_template('viewRecovered.html',vRec=myresult)
+   else :
+      form=LoginForm()
+      return render_template('login.html',title='login',form=form)      
 
 @app.route('/terminate', methods=['GET', 'POST'])
 def terminate():
-   if request.method=="POST":
-      p_code = request.form["patientID"]
-      sql="DELETE FROM DOC_PAT WHERE p_code=%s"
-      val=(p_code,)
-      mycursor.execute(sql, val)
-      mydb.commit()
-      flash(f'The Patient is terminated successfully !')    
-      return redirect(url_for('viewR')) 
+   if current_user.is_authenticated:
+
+      if request.method=="POST":
+         p_code = request.form["patientID"]
+         sql="DELETE FROM DOC_PAT WHERE p_code=%s"
+         val=(p_code,)
+         mycursor.execute(sql, val)
+         mydb.commit()
+         flash(f'The Patient is terminated successfully !')    
+         return redirect(url_for('viewR')) 
     
-   else:
-      return render_template('terminate.html') 
+      else:
+         return render_template('terminate.html') 
+   else :
+      form=LoginForm()
+      return render_template('login.html',title='login',form=form)         
 
 @app.route('/yourPatient', methods=['GET', 'POST'])
 def yourPatient():
-   if request.method=="POST":
-      d_code = request.form["doctorID"]
-      sql="SELECT Patients.username, Patients.id, doc_pat.appointment FROM DOC_PAT  JOIN Doctors on DOC_PAT.d_code = Doctors.id JOIN Patients on DOC_PAT.p_code = Patients.id WHERE d_code= %s "
-      val=(d_code,)
-      mycursor.execute(sql, val)
-      myresult = mycursor.fetchall()
-      for x in myresult:
-         print(x)
-      return render_template('vyourPatient.html',yourPatient=myresult)        
+   if current_user.is_authenticated:
+
+      if request.method=="POST":
+         d_code = request.form["doctorID"]
+         sql="SELECT Patients.username, Patients.id, doc_pat.appointment FROM DOC_PAT  JOIN Doctors on DOC_PAT.d_code = Doctors.id JOIN Patients on DOC_PAT.p_code = Patients.id WHERE d_code= %s "
+         val=(d_code,)
+         mycursor.execute(sql, val)
+         myresult = mycursor.fetchall()
+         for x in myresult:
+            print(x)
+         return render_template('vyourPatient.html',yourPatient=myresult)        
     
-   else:
-      return render_template('yourPatient.html')  
+      else:
+         return render_template('yourPatient.html')  
+   else :
+      form=LoginForm()
+      return render_template('login.html',title='login',form=form)         
 
 @app.route('/yourDoctor', methods=['GET', 'POST'])
 def yourDoctor():
-   if request.method=="POST":
-      p_code = request.form["patientID"]
-      sql="SELECT Doctors.username,Doctors.id ,doc_pat.appointment FROM DOC_PAT  JOIN Patients on DOC_PAT.p_code = Patients.id JOIN Doctors on DOC_PAT.d_code = Doctors.id WHERE p_code= %s "
-      val=(p_code,)
-      mycursor.execute(sql, val)
-      myresult = mycursor.fetchall()
-      for x in myresult:
-         print(x)
-      return render_template('vyourDoctor.html',yourDoctor=myresult)        
+   if current_user.is_authenticated:
+
+      if request.method=="POST":
+         p_code = request.form["patientID"]
+         sql="SELECT Doctors.username,Doctors.id ,doc_pat.appointment FROM DOC_PAT  JOIN Patients on DOC_PAT.p_code = Patients.id JOIN Doctors on DOC_PAT.d_code = Doctors.id WHERE p_code= %s "
+         val=(p_code,)
+         mycursor.execute(sql, val)
+         myresult = mycursor.fetchall()
+         for x in myresult:
+            print(x)
+         return render_template('vyourDoctor.html',yourDoctor=myresult)        
     
-   else:
-      return render_template('yourDoctor.html')
+      else:
+         return render_template('yourDoctor.html')
+   else :
+      form=LoginForm()
+      return render_template('login.html',title='login',form=form)         
 
 @app.route('/available')
 def available():
-   mycursor.execute("SELECT * FROM Doctors")
-   row_headers=[x[0] for x in mycursor.description] 
-   myresult = mycursor.fetchall()
-   for x in myresult:
-      print(x)
-   return render_template('available.html',available=myresult)    
+   if current_user.is_authenticated:
+
+      mycursor.execute("SELECT * FROM Doctors")
+      row_headers=[x[0] for x in mycursor.description] 
+      myresult = mycursor.fetchall()
+      for x in myresult:
+         print(x)
+      return render_template('available.html',available=myresult)   
+   else :
+      form=LoginForm()
+      return render_template('login.html',title='login',form=form)       
 
 @app.route('/stats')
 def stats():
-   mycursor.execute("SELECT 'Doctors' AS table_name, COUNT(id) FROM doctors UNION SELECT 'All Patients' AS table_name, COUNT(id) FROM patients UNION SELECT 'Recovered' AS table_name, COUNT(p_id) FROM rec_patient")
-   row_headers=[x[0] for x in mycursor.description] 
-   myresult = mycursor.fetchall()
-   for x in myresult:
-      print(x)
-   return render_template('stats.html',stats=myresult)      
+   if current_user.is_authenticated:
+      mycursor.execute("SELECT 'Doctors' AS table_name, COUNT(id) FROM doctors UNION SELECT 'All Patients' AS table_name, COUNT(id) FROM patients UNION SELECT 'Recovered' AS table_name, COUNT(p_id) FROM rec_patient")
+      row_headers=[x[0] for x in mycursor.description] 
+      myresult = mycursor.fetchall()
+      for x in myresult:
+         print(x)
+      return render_template('stats.html',stats=myresult)      
+   else :
+      form=LoginForm()
+      return render_template('login.html',title='login',form=form)     
 
 @app.route('/admin')
 def admin():
-   return render_template('admin.html')
+    if current_user.is_authenticated:  
+       return render_template('admin.html')
+    else:
+       form=LoginForm()
+       return render_template('login.html',title='login',form=form)  
+
 
 
 @app.route('/doctor')
 def doctor():
-   return render_template('doctor.html')
+   if current_user.is_authenticated:
+      return render_template('doctor.html')
+   else :
+      form=LoginForm()
+
+      return render_template('login.html',title='login',form=form)  
 
 
 @app.route('/patient')
 def patient():
-   return render_template('patient.html')
+
+   if current_user.is_authenticated:
+      return render_template('patient.html')
+   else :
+      form=LoginForm()
+      return render_template('login.html',title='login',form=form)  
+
 
 
 
@@ -618,6 +778,16 @@ def delete_post(post_id):
     db.session.commit()
     flash('Your post has been deleted!', 'success')
     return redirect(url_for('home'))
+
+
+
+
+   
+
+
+
+
+
 
 
 
