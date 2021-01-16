@@ -108,6 +108,8 @@ def register():
            password = request.form["password"]
            sql= "SELECT email FROM Doctors WHERE email= %s "
            val=(email,)
+           cursor = mydb.cursor(buffered=True)
+
            mycursor.execute(sql, val)
            myresult=mycursor.fetchone()
            if myresult!=None:
@@ -117,6 +119,8 @@ def register():
                flash(f'Account Created for Doctor {form.username.data}! now you can login','success')
                sql = "INSERT INTO Doctors (username,email,password) VALUES (%s, %s, %s)"
                val = (username,email,password)
+               cursor = mydb.cursor(buffered=True)
+
                mycursor.execute(sql, val)
                mydb.commit()
                print(username,email,password)   
@@ -133,6 +137,8 @@ def register():
           password = request.form["password"]
           sql= "SELECT email FROM Patients WHERE email= %s "
           val=(email,)
+          cursor = mydb.cursor(buffered=True)
+
           mycursor.execute(sql, val)
           myresult=mycursor.fetchone()
           if myresult!=None:
@@ -350,8 +356,8 @@ def typeP():
          val = (typeP,ID)
          mycursor.execute(sql, val)
          mydb.commit()
-         flash(f'Your scanning type is succesfully added !')    
-         return redirect(url_for('patient')) 
+         flash(f'Your Info is succesfully updated !')    
+         return render_template('patient.html')
     
       else:
          return render_template('typeP.html') 
@@ -420,6 +426,8 @@ def relate():
          hour=request.form["hour"]
          sql = "INSERT INTO DOC_PAT (d_code,p_code,appointment,hour) VALUES (%s,%s,%s,%s)"
          val = (d_code,p_code,appointment,hour)
+         cursor = mydb.cursor(buffered=True)
+
          mycursor.execute(sql,val)
          mydb.commit()
          print(p_code,d_code,appointment)
