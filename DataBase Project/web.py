@@ -304,7 +304,6 @@ def add():
 
 @app.route('/viewDoctors')
 def viewD():
-   if current_user.is_authenticated:
 
       mycursor.execute("SELECT * FROM Doctors")
       row_headers=[x[0] for x in mycursor.description] 
@@ -312,10 +311,7 @@ def viewD():
       for x in myresult:
          print(x)
       return render_template('viewDoctors.html',viewD=myresult)
-   else :
-      form=LoginForm()
-      return render_template('login.html',title='login',form=form)      
-
+   
 @app.route('/addPatient', methods=['GET', 'POST'])
 def addP():
    
@@ -362,7 +358,6 @@ def typeP():
   
 @app.route('/viewPatients')
 def viewP():
-   if current_user.is_authenticated:
 
       mycursor.execute("SELECT * FROM patients")
       row_headers=[x[0] for x in mycursor.description] 
@@ -370,10 +365,7 @@ def viewP():
       for x in myresult:
          print(x)
       return render_template('viewPatients.html',viewP=myresult)
-   else :
-      form=LoginForm()
-      return render_template('login.html',title='login',form=form)      
-
+ 
 @app.route('/patientH')
 def patientH():
 
@@ -495,17 +487,13 @@ def relate():
 
 @app.route('/viewRelation')
 def viewR():
-   if current_user.is_authenticated:
 
       mycursor.execute("SELECT doctors.username,doctors.id , patients.username,patients.id , doc_pat.appointment FROM DOC_PAT  JOIN Doctors on DOC_PAT.d_code = doctors.id JOIN patients on DOC_PAT.p_code = patients.id;")
       myresult = mycursor.fetchall()
       for x in myresult:
          print(x)
       return render_template('viewRelation.html',viewR=myresult)    
-   else :
-      form=LoginForm()
-      return render_template('login.html',title='login',form=form)           
-
+  
 
 @app.route('/recoveredPatient', methods=['GET', 'POST'])
 def rec():
@@ -527,7 +515,6 @@ def rec():
 
 @app.route('/viewRecovered')
 def vRec():
-   if current_user.is_authenticated:
 
       mycursor.execute("SELECT patients.username,patients.id ,date_rec FROM REC_PATIENT JOIN PATIENTS on REC_PATIENT.p_id = patients.id")
     
@@ -536,9 +523,7 @@ def vRec():
       for x in myresult:
          print(x)
       return render_template('viewRecovered.html',vRec=myresult)
-   else :
-      form=LoginForm()
-      return render_template('login.html',title='login',form=form)      
+   
 
 @app.route('/terminate', methods=['GET', 'POST'])
 def terminate():
@@ -575,7 +560,6 @@ def yourPatient():
 
 @app.route('/yourDoctor', methods=['GET', 'POST'])
 def yourDoctor():
-   if current_user.is_authenticated:
 
       if request.method=="POST":
          p_code = request.form["patientID"]
@@ -589,13 +573,9 @@ def yourDoctor():
     
       else:
          return render_template('yourDoctor.html')
-   else :
-      form=LoginForm()
-      return render_template('login.html',title='login',form=form)         
-
+ 
 @app.route('/available')
 def available():
-   if current_user.is_authenticated:
 
       mycursor.execute("SELECT * FROM Doctors")
       row_headers=[x[0] for x in mycursor.description] 
@@ -603,9 +583,7 @@ def available():
       for x in myresult:
          print(x)
       return render_template('available.html',available=myresult)   
-   else :
-      form=LoginForm()
-      return render_template('login.html',title='login',form=form)       
+   
 
 @app.route('/stats')
 def stats():
