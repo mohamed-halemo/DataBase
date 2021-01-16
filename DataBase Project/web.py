@@ -282,8 +282,7 @@ def viewC():
 
 @app.route('/addDoctor', methods=['GET', 'POST'])
 def add():
-   if current_user.is_authenticated:
-
+   
       if request.method=="POST":
          username = request.form["doctorName"]
          email = request.form["doctorEmail"]
@@ -301,9 +300,7 @@ def add():
          return redirect(url_for('viewD')) 
       else:
          return render_template('addDoctor.html') 
-   else :
-      form=LoginForm()
-      return render_template('login.html',title='login',form=form)         
+  
 
 @app.route('/viewDoctors')
 def viewD():
@@ -321,7 +318,7 @@ def viewD():
 
 @app.route('/addPatient', methods=['GET', 'POST'])
 def addP():
-   if current_user.is_authenticated:
+   
 
       if request.method=="POST":
          username = request.form["patientName"]
@@ -337,17 +334,15 @@ def addP():
          mycursor.execute(sql, val)
          mydb.commit()
          flash(f'Patient is succesfully added !')    
-         return redirect(url_for('viewP')) 
+         return redirect(url_for('viewP'))
     
       else:
          return render_template('addPatient.html') 
-   else :
-      form=LoginForm()
-      return render_template('login.html',title='login',form=form)         
-      
+               
+   
+ 
 @app.route('/typeP', methods=['GET', 'POST'])
 def typeP():
-   if current_user.is_authenticated:
 
       if request.method=="POST":
          ID = request.form["patientID"]
@@ -364,10 +359,7 @@ def typeP():
     
       else:
          return render_template('typeP.html') 
-   else :
-      form=LoginForm()
-      return render_template('login.html',title='login',form=form)         
-
+  
 @app.route('/viewPatients')
 def viewP():
    if current_user.is_authenticated:
@@ -384,7 +376,6 @@ def viewP():
 
 @app.route('/patientH')
 def patientH():
-   if current_user.is_authenticated:
 
       mycursor.execute("SELECT * FROM patients")
       row_headers=[x[0] for x in mycursor.description] 
@@ -392,13 +383,9 @@ def patientH():
       for x in myresult:
          print(x)
       return render_template('patientH.html',patientH=myresult)   
-   else :
-      form=LoginForm()
-      return render_template('login.html',title='login',form=form)       
-
+   
 @app.route('/removeDoctor', methods=['GET', 'POST'])
 def deleteD():
-   if current_user.is_authenticated:
 
       if request.method=="POST":
          id = request.form["doctorID"]
@@ -411,13 +398,11 @@ def deleteD():
          return redirect(url_for('viewD'))
       else:
          return render_template('removeDoctor.html')
-   else :
-      form=LoginForm()
-      return render_template('login.html',title='login',form=form)         
+        
 
 @app.route('/removePatient', methods=['GET', 'POST'])
 def deleteP():
-   if current_user.is_authenticated:
+  
 
       if request.method=="POST":
          id = request.form["patientID"]
@@ -430,13 +415,11 @@ def deleteP():
          return redirect(url_for('viewP'))
       else:
          return render_template('removePatient.html')
-   else :
-      form=LoginForm()
-      return render_template('login.html',title='login',form=form)         
+    
 
 @app.route('/relate', methods=['GET', 'POST'])
 def relate():
-   if current_user.is_authenticated:
+  
 
       if request.method=="POST":
          p_code = request.form["patientID"]
@@ -488,9 +471,7 @@ def relate():
       else:
          return render_template('relate.html')
 
-   else :
-      form=LoginForm()
-      return render_template('login.html',title='login',form=form)  
+  
 
 
 
@@ -528,7 +509,7 @@ def viewR():
 
 @app.route('/recoveredPatient', methods=['GET', 'POST'])
 def rec():
-   if current_user.is_authenticated:
+
 
       if request.method=="POST":
          p_code = request.form["patientID"]
@@ -541,9 +522,7 @@ def rec():
          return redirect(url_for('vRec')) 
       else:
          return render_template('recoveredPatient.html')
-   else :
-      form=LoginForm()
-      return render_template('login.html',title='login',form=form)         
+      
       
 
 @app.route('/viewRecovered')
@@ -563,7 +542,6 @@ def vRec():
 
 @app.route('/terminate', methods=['GET', 'POST'])
 def terminate():
-   if current_user.is_authenticated:
 
       if request.method=="POST":
          p_code = request.form["patientID"]
@@ -576,13 +554,10 @@ def terminate():
     
       else:
          return render_template('terminate.html') 
-   else :
-      form=LoginForm()
-      return render_template('login.html',title='login',form=form)         
+ 
 
 @app.route('/yourPatient', methods=['GET', 'POST'])
 def yourPatient():
-   if current_user.is_authenticated:
 
       if request.method=="POST":
          d_code = request.form["doctorID"]
@@ -596,9 +571,7 @@ def yourPatient():
     
       else:
          return render_template('yourPatient.html')  
-   else :
-      form=LoginForm()
-      return render_template('login.html',title='login',form=form)         
+         
 
 @app.route('/yourDoctor', methods=['GET', 'POST'])
 def yourDoctor():
